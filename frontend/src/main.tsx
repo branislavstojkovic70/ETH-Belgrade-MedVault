@@ -8,6 +8,7 @@ import Home from "./pages/home.tsx";
 import Navbar from "./components/navbar.tsx";
 import Files from "./pages/files.tsx";
 import File from "./pages/file.tsx";
+import FileAccess from "./pages/file-access.tsx";
 
 const theme = createTheme({
 	palette: {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
 				path: "/file/:fileId",
 				element: <File />,
 			},
+			{
+				path: "access",
+				element: <FileAccess/>
+			}
 		],
 	},
 	{
