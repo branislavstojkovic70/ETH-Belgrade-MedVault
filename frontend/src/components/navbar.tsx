@@ -1,8 +1,10 @@
 import { AppBar, Box, Button, SvgIcon, Toolbar,Typography } from "@mui/material";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Logout, Upload } from "@mui/icons-material";
-import Logo from "../assets/logo-light.svg?react";
 import "../index.css";
+
+// @ts-ignore
+import Logo from "../assets/logo-light.svg?react";
 
 export default function Navbar() {
     const navigate = useNavigate();
