@@ -17,6 +17,32 @@
 	},
 	{
 		"inputs": [],
+		"name": "MedVault_InvalidAddress",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "current",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "endDate",
+				"type": "uint256"
+			}
+		],
+		"name": "MedVault_TokenExpired",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "MedVault_Unauthorized",
+		"type": "error"
+	},
+	{
+		"inputs": [],
 		"name": "SiweAuth_AddressMismatch",
 		"type": "error"
 	},
@@ -67,11 +93,73 @@
 		"type": "error"
 	},
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "token",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "doctor",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "enddate",
+				"type": "uint256"
+			}
+		],
+		"name": "AccessGranted",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "token",
+				"type": "string"
+			}
+		],
+		"name": "AccessRevoked",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "fileId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "fileName",
+				"type": "string"
+			}
+		],
+		"name": "FileRegistered",
+		"type": "event"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "string",
 				"name": "accessToken",
 				"type": "string"
+			},
+			{
+				"internalType": "bytes",
+				"name": "authToken",
+				"type": "bytes"
 			}
 		],
 		"name": "accessFile",

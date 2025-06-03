@@ -5,6 +5,18 @@ import "@oasisprotocol/sapphire-contracts/contracts/Sapphire.sol";
 import {SiweAuth} from "@oasisprotocol/sapphire-contracts/contracts/auth/SiweAuth.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
+/// Unauthorized access.
+error MedVault_Unauthorized();
+
+/// Provided address is invalid (zero address)
+error MedVault_InvalidAddress();
+
+/// End date must be in the future
+error MedVault_InvalidEndDate();
+
+/// This token expired. Current ts: current, end: endDate.
+error MedVault_TokenExpired(uint256 current, uint256 endDate);
+
 struct FileInfo {
     uint256 fileId;
     address owner;
@@ -25,7 +37,11 @@ contract MedVault is SiweAuth {
     mapping(address => FileInfo[]) private ownerFiles;
     mapping(string => DoctorAccess) private doctorAccess;
 
-    constructor(string memory domain) SiweAuth(domain) { }
+    event FileRegistered(uint256 fileId, string fileName);
+    event AccessGranted(string token, address doctor, uint256 enddate);
+    event AccessRevoked(string token);
+
+    constructor(string memory domain) SiweAuth(domain) {}
 
     function registerFile(
         string memory fileName,
@@ -54,23 +70,39 @@ contract MedVault is SiweAuth {
         uint256 duration
     ) external {
         FileInfo memory file = files[fileId];
-        require(file.owner == msg.sender, "Unauthorized");
+        require(file.owner == msg.sender, MedVault_Unauthorized());
+        require(doctor != address(0), MedVault_InvalidAddress());
 
         bytes memory rnd = Sapphire.randomBytes(32, "");
-        string memory accessToken = Strings.toHexString(uint256(keccak256(rnd)));
+        string memory accessToken = Strings.toHexString(
+            uint256(keccak256(rnd))
+        );
 
         doctorAccess[accessToken] = DoctorAccess({
             doctor: doctor,
             fileId: fileId,
             endDate: block.timestamp + duration * 60
         });
-
+        emit AccessGranted(
+            accessToken,
+            doctor,
+            block.timestamp + duration * 60
+        );
     }
 
     function accessFile(
-        string memory accessToken
+        string memory accessToken,
+        bytes memory authToken
     ) external view returns (FileInfo memory) {
         DoctorAccess memory access = doctorAccess[accessToken];
+        require(
+            access.doctor == authMsgSender(authToken),
+            MedVault_Unauthorized()
+        );
+        require(
+            access.endDate > block.timestamp,
+            MedVault_TokenExpired(block.timestamp, access.endDate)
+        );
         return files[access.fileId];
     }
 
@@ -83,11 +115,9 @@ contract MedVault is SiweAuth {
     function getOwnerFile(
         uint256 fileId,
         bytes memory token
-    ) external view returns(FileInfo memory){
+    ) external view returns (FileInfo memory) {
         FileInfo memory file = files[fileId];
-        require(authMsgSender(token) == file.owner, "Unauthorized");
+        require(authMsgSender(token) == file.owner, MedVault_Unauthorized());
         return file;
     }
-
-
 }
