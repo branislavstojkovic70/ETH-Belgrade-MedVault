@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import Home from "./pages/home.tsx";
 import Navbar from "./components/navbar.tsx";
 import Files from "./pages/files.tsx";
+import File from "./pages/file.tsx";
 
 const theme = createTheme({
 	palette: {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
 			{
 				path: "/files",
 				element: <Files />,
+			},
+			{
+				path: "/file/:fileId",
+				element: <File />,
 			},
 		],
 	},

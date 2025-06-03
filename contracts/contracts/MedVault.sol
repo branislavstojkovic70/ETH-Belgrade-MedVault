@@ -80,5 +80,14 @@ contract MedVault is SiweAuth {
         return ownerFiles[authMsgSender(token)];
     }
 
+    function getOwnerFile(
+        uint256 fileId,
+        bytes memory token
+    ) external view returns(FileInfo memory){
+        FileInfo memory file = files[fileId];
+        require(authMsgSender(token) == file.owner, "Unauthorized");
+        return file;
+    }
+
 
 }

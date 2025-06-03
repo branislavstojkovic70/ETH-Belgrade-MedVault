@@ -1,4 +1,4 @@
-import { encryptData } from "../util/crypto-utils";
+import { decryptData, encryptData } from "../util/crypto-utils";
 import axios from "axios";
 import {PINATA_API_KEY, PINATA_API_SECRET} from "../config/pinata-config"
 
@@ -35,4 +35,27 @@ export async function encryptAndPinFile(file: File): Promise<{
 
 	const cid: string = res.data.IpfsHash;
 	return { cid, symmetricKeyHex, ivHex };
+}
+
+export async function fetchAndDecryptFile(
+	cid: string,
+	symmetricKeyHex: string,
+	ivHex: string
+): Promise<Blob> {
+	const url = `https://gateway.pinata.cloud/ipfs/${cid}`;
+	const response = await axios.get<ArrayBuffer>(url, {
+		responseType: "arraybuffer",
+		maxBodyLength: Infinity,
+	});
+	const encryptedBuffer = response.data;
+
+	const decryptedBuffer = await decryptData(
+		encryptedBuffer,
+		symmetricKeyHex,
+		ivHex
+	);
+
+	return new Blob([new Uint8Array(decryptedBuffer)], {
+		type: "application/pdf",
+	});
 }

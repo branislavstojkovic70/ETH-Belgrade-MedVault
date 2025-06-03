@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import FileList from "../components/file-list"; // prilagodi putanju ako je drugačija
+import FileList from "../components/file-list"; 
 
 export default function Files() {
 	return (
