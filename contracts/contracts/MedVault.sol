@@ -2,6 +2,7 @@
 pragma solidity ^0.8.30;
 
 import "@oasisprotocol/sapphire-contracts/contracts/Sapphire.sol";
+import {SiweAuth} from "@oasisprotocol/sapphire-contracts/contracts/auth/SiweAuth.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 struct FileInfo {
@@ -19,12 +20,12 @@ struct DoctorAccess {
     uint256 fileId;
 }
 
-contract MedVault {
+contract MedVault is SiweAuth {
     mapping(uint256 => FileInfo) private files;
     mapping(address => FileInfo[]) private ownerFiles;
     mapping(string => DoctorAccess) private doctorAccess;
 
-    constructor() { }
+    constructor(string memory domain) SiweAuth(domain) { }
 
     function registerFile(
         string memory fileName,
@@ -71,6 +72,12 @@ contract MedVault {
     ) external view returns (FileInfo memory) {
         DoctorAccess memory access = doctorAccess[accessToken];
         return files[access.fileId];
+    }
+
+    function getOwnerFiles(
+        bytes memory token
+    ) external view returns (FileInfo[] memory) {
+        return ownerFiles[authMsgSender(token)];
     }
 
 

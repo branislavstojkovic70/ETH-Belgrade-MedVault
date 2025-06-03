@@ -6,6 +6,7 @@ import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { Toaster } from "react-hot-toast";
 import Home from "./pages/home.tsx";
 import Navbar from "./components/navbar.tsx";
+import Files from "./pages/files.tsx";
 
 const theme = createTheme({
 	palette: {
@@ -38,25 +39,24 @@ const theme = createTheme({
 
 const router = createBrowserRouter([
 	{
-	  path:"/",
-	  element: <Navbar/>,
-	  children: [
-		  {
-			  path:"/",
-			  element:
-				  <Home/>
-		  },
-	  ],
-  },
-  {
-	  path:"/login", 
-	  element:
-		  <Login/>
-  },
-
-])
-
-
+		path: "/",
+		element: <Navbar />,
+		children: [
+			{
+				path: "/",
+				element: <Home />,
+			},
+			{
+				path: "/files",
+				element: <Files />,
+			},
+		],
+	},
+	{
+		path: "/login",
+		element: <Login />,
+	},
+]);
 
 createRoot(document.getElementById("root")!).render(
 	<ThemeProvider theme={theme}>

@@ -1,9 +1,30 @@
-import { ethers } from "ethers";
+import { ethers, Signature } from "ethers";
+import { SiweMessage } from "siwe";
 import {
+	getSigner,
 	getVaultContract,
+	getWalletAddress,
 } from "../util/wallet-utils";
 import type { FileInfo } from "../domain/file-info";
 
+export async function login() {
+	const vault = await getVaultContract();
+	const domain = await vault.domain();
+	const address = await getWalletAddress();
+	const siweMsg = new SiweMessage({
+		domain,
+		address: ethers.getAddress(address!),
+		uri: `http://${domain}`,
+		version: "1",
+		chainId: 23293,
+	}).toMessage();
+	const signer = await getSigner();
+	const rawSig = await signer!.signMessage(siweMsg);
+	const sig = Signature.from(rawSig);
+	const token = await vault.login(siweMsg, sig);
+	console.log("token", token);
+	localStorage.setItem("token", token);
+}
 
 export async function registerFile(
 	fileName: string,

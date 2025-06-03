@@ -1,6 +1,6 @@
 import { AppBar, Box, Button, SvgIcon, Toolbar,Typography } from "@mui/material";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Logout, Upload } from "@mui/icons-material";
+import { FileCopy, Logout, Upload } from "@mui/icons-material";
 import "../index.css";
 
 // @ts-ignore
@@ -67,6 +67,17 @@ export default function Navbar() {
                             gap: 3,
                         }}
                     >
+                        <Button
+							onClick={() => navigate("/files")}
+							startIcon={<FileCopy sx={{ color: "white" }} />}
+							sx={{
+								textTransform: "capitalize",
+								color: "#F5F5F5",
+							}}
+						>
+							Files
+						</Button>
+                        
                         <Button
                             onClick={() => navigate("/")}
                             startIcon={<Upload sx={{ color: "white" }} />}

@@ -1,12 +1,39 @@
-import { Box, Button, Typography } from "@mui/material";
+import {
+	Box,
+	Button,
+	CircularProgress,
+	SvgIcon,
+	Typography,
+} from "@mui/material";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { login } from "../services/sapphire-service";
+import { isMetaMaskInstalled } from "../util/wallet-utils";
+import { useState } from "react";
+// @ts-ignore
+import Logo from "../assets/logo-dark.svg?react";
+// @ts-ignore
+import MetaMaskLogo from "../assets/metamask.svg?react";
 
 export default function Login() {
 	const navigate = useNavigate();
+	const [loading, setLoading] = useState(false);
+
 	const handleLogin = async () => {
-		toast.success("Login works.");
-		navigate("/");
+		if (!isMetaMaskInstalled()) {
+			toast.error("MetaMask extension is needed to proceed.");
+			return;
+		}
+		setLoading(true);
+		try {
+			await login();
+			navigate("/");
+		} catch (err) {
+			console.error("Failed to login:", err);
+			toast.error("Login failed.");
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	return (
@@ -31,6 +58,16 @@ export default function Login() {
 					gap: 2,
 				}}
 			>
+				<SvgIcon
+					id={"logo"}
+					inheritViewBox
+					component={Logo}
+					sx={{
+						width: "350px",
+						height: "auto",
+					}}
+				/>
+
 				<Typography
 					sx={{
 						fontSize: "34px",
@@ -55,7 +92,6 @@ export default function Login() {
 			</Box>
 
 			<Button
-                variant="contained"
 				sx={{
 					fontSize: "20px",
 					textTransform: "capitalize",
@@ -63,9 +99,18 @@ export default function Login() {
 					width: "100%",
 					maxWidth: "400px",
 				}}
-                onClick={handleLogin}
-            >
-                Continue with MetaMask
+				startIcon={
+					loading ? (
+						<CircularProgress size={24} sx={{ color: "white" }} />
+					) : (
+						<MetaMaskLogo style={{ width: 30, height: 30 }} />
+					)
+				}
+				variant="contained"
+				disabled={loading}
+				onClick={handleLogin}
+			>
+				{loading ? "Connecting..." : "Continue with MetaMask"}
 			</Button>
 		</Box>
 	);
