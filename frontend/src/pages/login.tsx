@@ -3,8 +3,10 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+	const navigate = useNavigate();
 	const handleLogin = async () => {
 		toast.success("Login works.");
+		navigate("/");
 	};
 
 	return (
