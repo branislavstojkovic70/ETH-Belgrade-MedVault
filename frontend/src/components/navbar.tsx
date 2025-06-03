@@ -27,13 +27,15 @@ export default function Navbar() {
                     }}
                 >
                     <Box
+                        onClick={() => navigate("/")}
                         sx={{
                             width: "64px",
                             height: "64px",
                             display: "flex",
                             alignItems: "center",
                             flexShrink: 0,
-                            gap:1
+                            gap:1,
+                            cursor: 'pointer'
                         }}
                     >
                         <SvgIcon
