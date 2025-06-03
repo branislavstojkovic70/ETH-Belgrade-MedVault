@@ -4,6 +4,7 @@ import { Box, Button, CircularProgress, Divider, TextField, Typography } from "@
 import { useRef, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { encryptAndPinFile } from "../services/pinata-service";
+import { registerFile } from "../services/sapphire-service";
 
 const validationSchema = yup.object({
 	file: yup.mixed().required("File is required"),
@@ -31,7 +32,13 @@ export default function FileUpload() {
 					values.file
 				);
 				console.log("File pinned, CID =", cid);
-
+				const msg = await registerFile(
+					values.fileName,
+					cid,
+					symmetricKeyHex,
+					ivHex
+				  );
+				  toast.success(msg);
 				resetForm();
 				setFile(null);
 				if (previewUrl) {
