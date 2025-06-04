@@ -3,10 +3,11 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 task("deploy", "Deploys the MedVault contract")
   .setAction(async (args, hre: HardhatRuntimeEnvironment) => {
-    const domain = "http://localhost:5173"; // argument za konstruktor
+    const domain = "http://localhost:5173"; 
 
     const factory = await hre.ethers.getContractFactory('MedVault');
-    const contract = await factory.deploy(domain); 
+    const [deployer] = await hre.ethers.getSigners();
+    const contract = await factory.deploy(domain, deployer.address);
 
     const dt = contract.deploymentTransaction();
     console.log('Deployment Transaction:', dt!.hash);
