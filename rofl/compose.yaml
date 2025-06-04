@@ -3,7 +3,7 @@ version: '3.8'
 services:
   rofl-decryptor:
     build: .
-    image: "https://hub.docker.com/r/wa1terbish0p/decryptor"
+    image: "docker.io/wa1terbish0p/decryptor"
     platform: linux/amd64  
     ports:
       - "3000:3000"

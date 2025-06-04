@@ -2,10 +2,12 @@ import express, { Application, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
-import { ethers } from 'ethers';
+import { ethers, getDefaultProvider, Wallet } from 'ethers';
 import { FileInfo } from './file-info';
 import axios from 'axios';
 import vaultAbi from './vault.json';
+import { wrapEthereumProvider } from '@oasisprotocol/sapphire-paratime';
+import { wrapEthersSigner } from '@oasisprotocol/sapphire-ethers-v6';
 
 //ENV
 dotenv.config({ path: "./.env" });
@@ -20,9 +22,12 @@ const PORT = process.env.PORT || 3000;
 const app: Application = express();
 
 // Blockchain setup
-const provider = new ethers.JsonRpcProvider(RPC_URL);
-const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
-const contract = new ethers.Contract(CONTRACT_ADDRESS, vaultAbi, wallet);
+
+const provider = getDefaultProvider(RPC_URL);
+// const wrapped = wrapEthereumProvider(provider);
+// const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
+const signer = wrapEthersSigner(new Wallet(PRIVATE_KEY).connect(provider))
+const contract = new ethers.Contract(CONTRACT_ADDRESS, vaultAbi, signer);
 
 app.use(helmet());
 app.use(cors({ origin: "*" }));
