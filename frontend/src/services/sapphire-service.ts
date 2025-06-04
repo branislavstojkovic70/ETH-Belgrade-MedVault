@@ -34,7 +34,9 @@ export async function registerFile(
 ): Promise<string> {
 	const vault = await getVaultContract();
 
-	const tx = await vault.registerFile(fileName, fileCid, key, iv);
+	const tx = await vault.registerFile(fileName, fileCid, key, iv, {
+		value: ethers.parseEther("0.05"), 
+	});
 	console.log("Transaction sent:", tx.hash);
 
 	const receipt = await tx.wait();

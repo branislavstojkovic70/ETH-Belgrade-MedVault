@@ -4,6 +4,8 @@ pragma solidity ^0.8.30;
 import "@oasisprotocol/sapphire-contracts/contracts/Sapphire.sol";
 import {SiweAuth} from "@oasisprotocol/sapphire-contracts/contracts/auth/SiweAuth.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
 
 /// Unauthorized access.
 error MedVault_Unauthorized();
@@ -13,6 +15,12 @@ error MedVault_InvalidAddress();
 
 /// End date must be in the future
 error MedVault_InvalidEndDate();
+
+/// Transaction failed
+error MedVault_TransactionFailed();
+
+/// Insufficient funds. 
+error MedVault_InsufficientFunds();
 
 /// This token expired. Current ts: current, end: endDate.
 error MedVault_TokenExpired(uint256 current, uint256 endDate);
@@ -32,7 +40,7 @@ struct DoctorAccess {
     uint256 fileId;
 }
 
-contract MedVault is SiweAuth {
+contract MedVault is SiweAuth, Ownable {
     mapping(uint256 => FileInfo) private files;
     mapping(address => FileInfo[]) private ownerFiles;
     mapping(string => DoctorAccess) private doctorAccess;
@@ -41,14 +49,20 @@ contract MedVault is SiweAuth {
     event AccessGranted(string token, address doctor, uint256 enddate);
     event AccessRevoked(string token);
 
-    constructor(string memory domain) SiweAuth(domain) {}
+    uint256 public constant PRICE_PER_FILE = 0.005 ether; 
+
+    constructor(string memory domain) 
+        Ownable(msg.sender)
+        SiweAuth(domain)
+    {}
 
     function registerFile(
         string memory fileName,
         string memory cid,
         string memory key,
         string memory iv
-    ) external {
+    ) external payable {
+        require(msg.value >= PRICE_PER_FILE, MedVault_InsufficientFunds()); 
         bytes memory rnd = Sapphire.randomBytes(32, "");
         uint256 fileId = uint256(keccak256(rnd));
 
@@ -119,5 +133,10 @@ contract MedVault is SiweAuth {
         FileInfo memory file = files[fileId];
         require(authMsgSender(token) == file.owner, MedVault_Unauthorized());
         return file;
+    }
+
+    function withdraw() external onlyOwner {
+        (bool success, ) = payable(msg.sender).call{value:  address(this).balance}("");
+        if (!success) revert MedVault_TransactionFailed();
     }
 }

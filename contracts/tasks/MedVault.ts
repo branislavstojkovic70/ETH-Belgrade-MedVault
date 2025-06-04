@@ -6,7 +6,7 @@ task("deploy", "Deploys the MedVault contract")
     const domain = "http://localhost:5173"; // argument za konstruktor
 
     const factory = await hre.ethers.getContractFactory('MedVault');
-    const contract = await factory.deploy(domain); // prosleđuje se u konstruktor
+    const contract = await factory.deploy(domain); 
 
     const dt = contract.deploymentTransaction();
     console.log('Deployment Transaction:', dt!.hash);
