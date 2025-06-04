@@ -4,8 +4,9 @@ pragma solidity ^0.8.30;
 import "@oasisprotocol/sapphire-contracts/contracts/Sapphire.sol";
 import {SiweAuth} from "@oasisprotocol/sapphire-contracts/contracts/auth/SiweAuth.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 
+/// Must be Owner 
+error MedVault_NotOwner();
 
 /// Unauthorized access.
 error MedVault_Unauthorized();
@@ -40,7 +41,7 @@ struct DoctorAccess {
     uint256 fileId;
 }
 
-contract MedVault is SiweAuth, Ownable {
+contract MedVault is SiweAuth {
     mapping(uint256 => FileInfo) private files;
     mapping(address => FileInfo[]) private ownerFiles;
     mapping(string => DoctorAccess) private doctorAccess;
@@ -50,11 +51,12 @@ contract MedVault is SiweAuth, Ownable {
     event AccessRevoked(string token);
 
     uint256 public constant PRICE_PER_FILE = 0.005 ether; 
-
+    address public immutable i_owner;
     constructor(string memory domain) 
-        Ownable(msg.sender)
         SiweAuth(domain)
-    {}
+    {
+        i_owner = msg.sender;
+    }
 
     function registerFile(
         string memory fileName,
@@ -135,7 +137,8 @@ contract MedVault is SiweAuth, Ownable {
         return file;
     }
 
-    function withdraw() external onlyOwner {
+    function withdraw() external {
+        require(msg.sender == i_owner, MedVault_NotOwner());
         (bool success, ) = payable(msg.sender).call{value:  address(this).balance}("");
         if (!success) revert MedVault_TransactionFailed();
     }
