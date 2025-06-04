@@ -42,7 +42,7 @@ deployments:
         value: pGJwa1ggnAI73wCxyn6h/09WkgFtOZ9cBc3be5PNB7JjWr0Vi0lkbmFtZVT+DXf9cHDroXDa9FgEXRSO0VF21GVub25jZU9MrakyQ1jrj5VfWJpEBrBldmFsdWVUuw2mdMPyxls8UHjofLqEHxoIjAI=
       - name: PRIVATE_KEY
         value: pGJwa1ggXiAXyjT7J0tV57n1QGjIO+QIA/JxpoY4btHqGm0eDRhkbmFtZVgbrF1Xz+/KBDw26G/LNkKAulAZpynkFbx2TZ15ZW5vbmNlT/A6Z0Si8ScTaTaiLYszH2V2YWx1ZVhQqEnq/+EXEjn45OUVRXdSlbLSItWMn0oBFeZJ744/kAM+FIiCMqVhtilX87Ytj/H+krL7tw3Fd3CDiRX2c8DydidUo/9U9UW70XqSaxyRPIE=
-      - name: CONTRACT_ADDRESS
-        value: pGJwa1ggeUVsIZWg35XRAGPnuJiKFLK0LyTQiqoy9jjyjxDbfSVkbmFtZVggP0jxoAoUy3kDxwCR+ieCF84/Ro6XzUy9cRdSIcJWr7llbm9uY2VP43ZEPUQQNVFMpCSirlc4ZXZhbHVlWDrZRHz5n9WnUo+htZkjkxWLZOoTId1+bSLAQm3zkGuq1/wvd8Dr+AyPzxuSyBIKx/PSoIZe/DdRtWY0
       - name: RPC_URL
         value: pGJwa1ggxjsL6F9grrF8N3eaa2FL3vlHRO+qHfNrbzr2ISNz+2NkbmFtZVc1lmz56MB37Fcs6K0meoxT4TzaZewHNWVub25jZU+TID+gKbkvIb/m1sN1vzlldmFsdWVYMkgCKR2rdi5z3SZRJGgmAvFJU2Uu2m2Pgin2FWWJyFbq8OWS4qFkeQ+g8OAgMNRLHBhG
+      - name: CONTRACT_ADDRESS
+        value: pGJwa1gglGcrOSa7f6CMsoPtubKv4YFgSZcTzvgghMOg+Ph+sEtkbmFtZVgg1vrJHAOSKeo6xfwRwHZi3Hs2efHuQW1wZXsKF6GQPBRlbm9uY2VPg+CjJPj0GGh771Ah8qynZXZhbHVlWDq4GqmyW89SPc6FWQGgFZawFjjatgzsu+GOGy6l80fhoLf6lQqv1LbDVAreeAbVLd2bJm1dm9PuGpGz

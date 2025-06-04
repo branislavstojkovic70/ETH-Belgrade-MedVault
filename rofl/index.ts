@@ -6,7 +6,6 @@ import { ethers, getDefaultProvider, Wallet } from 'ethers';
 import { FileInfo } from './file-info';
 import axios from 'axios';
 import vaultAbi from './vault.json';
-import { wrapEthereumProvider } from '@oasisprotocol/sapphire-paratime';
 import { wrapEthersSigner } from '@oasisprotocol/sapphire-ethers-v6';
 
 //ENV
@@ -24,8 +23,6 @@ const app: Application = express();
 // Blockchain setup
 
 const provider = getDefaultProvider(RPC_URL);
-// const wrapped = wrapEthereumProvider(provider);
-// const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
 const signer = wrapEthersSigner(new Wallet(PRIVATE_KEY).connect(provider))
 const contract = new ethers.Contract(CONTRACT_ADDRESS, vaultAbi, signer);
 

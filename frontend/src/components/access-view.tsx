@@ -31,7 +31,7 @@ export default function AccessView() {
 		validationSchema,
 		onSubmit: async (values) => {
 			setLoadingMeta(true);
-			axios.post('http://localhost:3000/api/files/access', {
+			axios.post('http://84.255.245.194:3000/api/files/access', {
 				accessToken: values.token,
 				authToken: localStorage.getItem("token")
 			}, {

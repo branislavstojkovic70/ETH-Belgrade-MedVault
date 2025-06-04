@@ -16,7 +16,7 @@ export async function login() {
 		address: ethers.getAddress(address!),
 		uri: `http://${domain}`,
 		version: "1",
-		chainId: 23293,
+		chainId: 23295,
 	}).toMessage();
 	const signer = await getSigner();
 	const rawSig = await signer!.signMessage(siweMsg);

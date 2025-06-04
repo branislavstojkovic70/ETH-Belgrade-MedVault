@@ -1,3 +1,3 @@
-export const vaultAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+export const vaultAddress = "0x92d168A23CA03807767E4156024DC85c22c41292";
 import vaultAbi from './vault-abi.json';
 export { vaultAbi };
