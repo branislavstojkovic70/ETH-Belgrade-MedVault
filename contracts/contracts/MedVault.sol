@@ -2,7 +2,29 @@
 pragma solidity ^0.8.30;
 
 import "@oasisprotocol/sapphire-contracts/contracts/Sapphire.sol";
+import {SiweAuth} from "@oasisprotocol/sapphire-contracts/contracts/auth/SiweAuth.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+
+/// Must be Owner 
+error MedVault_NotOwner();
+
+/// Unauthorized access.
+error MedVault_Unauthorized();
+
+/// Provided address is invalid (zero address)
+error MedVault_InvalidAddress();
+
+/// End date must be in the future
+error MedVault_InvalidEndDate();
+
+/// Transaction failed
+error MedVault_TransactionFailed();
+
+/// Insufficient funds. 
+error MedVault_InsufficientFunds();
+
+/// This token expired. Current ts: current, end: endDate.
+error MedVault_TokenExpired(uint256 current, uint256 endDate);
 
 struct FileInfo {
     uint256 fileId;
@@ -19,19 +41,30 @@ struct DoctorAccess {
     uint256 fileId;
 }
 
-contract MedVault {
+contract MedVault is SiweAuth {
     mapping(uint256 => FileInfo) private files;
     mapping(address => FileInfo[]) private ownerFiles;
     mapping(string => DoctorAccess) private doctorAccess;
 
-    constructor() { }
+    event FileRegistered(uint256 fileId, string fileName);
+    event AccessGranted(string token, address doctor, uint256 enddate);
+    event AccessRevoked(string token);
+
+    uint256 public constant PRICE_PER_FILE = 0.005 ether; 
+    address public immutable i_owner;
+    constructor(string memory domain) 
+        SiweAuth(domain)
+    {
+        i_owner = msg.sender;
+    }
 
     function registerFile(
         string memory fileName,
         string memory cid,
         string memory key,
         string memory iv
-    ) external {
+    ) external payable {
+        require(msg.value >= PRICE_PER_FILE, MedVault_InsufficientFunds()); 
         bytes memory rnd = Sapphire.randomBytes(32, "");
         uint256 fileId = uint256(keccak256(rnd));
 
@@ -53,25 +86,60 @@ contract MedVault {
         uint256 duration
     ) external {
         FileInfo memory file = files[fileId];
-        require(file.owner == msg.sender, "Unauthorized");
+        require(file.owner == msg.sender, MedVault_Unauthorized());
+        require(doctor != address(0), MedVault_InvalidAddress());
 
         bytes memory rnd = Sapphire.randomBytes(32, "");
-        string memory accessToken = Strings.toHexString(uint256(keccak256(rnd)));
+        string memory accessToken = Strings.toHexString(
+            uint256(keccak256(rnd))
+        );
 
         doctorAccess[accessToken] = DoctorAccess({
             doctor: doctor,
             fileId: fileId,
             endDate: block.timestamp + duration * 60
         });
-
+        emit AccessGranted(
+            accessToken,
+            doctor,
+            block.timestamp + duration * 60
+        );
     }
 
     function accessFile(
-        string memory accessToken
+        string memory accessToken,
+        bytes memory authToken
     ) external view returns (FileInfo memory) {
         DoctorAccess memory access = doctorAccess[accessToken];
+        require(
+            access.doctor == authMsgSender(authToken),
+            MedVault_Unauthorized()
+        );
+        require(
+            access.endDate > block.timestamp,
+            MedVault_TokenExpired(block.timestamp, access.endDate)
+        );
         return files[access.fileId];
     }
 
+    function getOwnerFiles(
+        bytes memory token
+    ) external view returns (FileInfo[] memory) {
+        return ownerFiles[authMsgSender(token)];
+    }
 
+    function getOwnerFile(
+        uint256 fileId,
+        bytes memory token
+    ) external view returns (FileInfo memory) {
+        FileInfo memory file = files[fileId];
+        require(authMsgSender(token) == file.owner, MedVault_Unauthorized());
+        return file;
+    }
+
+    function withdraw() external {
+        require(msg.sender == i_owner, MedVault_NotOwner());
+        (bool success, ) = payable(msg.sender).call{value:  address(this).balance}("");
+        if (!success) revert MedVault_TransactionFailed();
+    }
 }
