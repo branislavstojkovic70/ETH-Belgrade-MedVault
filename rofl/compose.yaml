@@ -3,7 +3,7 @@ version: '3.8'
 services:
   rofl-decryptor:
     build: .
-    image: "wa1terbish0p/rofl-decryptor"
+    image: "wa1terbish0p/decryptor"
     platform: linux/amd64  
     ports:
       - "3000:3000"
