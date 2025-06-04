@@ -5,6 +5,7 @@ import "@oasisprotocol/sapphire-contracts/contracts/Sapphire.sol";
 import {SiweAuth} from "@oasisprotocol/sapphire-contracts/contracts/auth/SiweAuth.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import {Subcall} from "@oasisprotocol/sapphire-contracts/contracts/Subcall.sol";
 
 /// Unauthorized access.
 error MedVault_Unauthorized();
@@ -47,13 +48,15 @@ contract MedVault is Ownable, SiweAuth {
     event FileRegistered(uint256 fileId, string fileName);
     event AccessGranted(string token, address doctor, uint256 enddate);
     event AccessRevoked(string token);
-
+    bytes21 public rofl;
     uint256 public constant PRICE_PER_FILE = 0.005 ether; 
 
-    constructor(string memory _domain,address _owner) 
+    constructor(string memory _domain,address _owner,bytes21 _rofl) 
         Ownable(_owner)
         SiweAuth(_domain)
-    {}
+    {
+        rofl = _rofl;
+    }
 
     function registerFile(
         string memory fileName,
@@ -107,6 +110,7 @@ contract MedVault is Ownable, SiweAuth {
         string memory accessToken,
         bytes memory authToken
     ) external view returns (FileInfo memory) {
+        Subcall.roflEnsureAuthorizedOrigin(rofl);
         DoctorAccess memory access = doctorAccess[accessToken];
         require(
             access.doctor == authMsgSender(authToken),

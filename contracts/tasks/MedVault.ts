@@ -1,3 +1,4 @@
+import { bech32 } from "bech32";
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
@@ -7,7 +8,11 @@ task("deploy", "Deploys the MedVault contract")
 
     const factory = await hre.ethers.getContractFactory('MedVault');
     const [deployer] = await hre.ethers.getSigners();
-    const contract = await factory.deploy(domain, deployer.address);
+    const decoded = bech32.decode("rofl1qz605l6m3zf6des979qayuduwgd6qulh857e8y08");
+    const bytes = bech32.fromWords(decoded.words);
+    const uint8Bytes = new Uint8Array(bytes);  
+    const roflBytes21 = hre.ethers.hexlify(uint8Bytes);
+    const contract = await factory.deploy(domain, deployer.address, roflBytes21);
 
     const dt = contract.deploymentTransaction();
     console.log('Deployment Transaction:', dt!.hash);

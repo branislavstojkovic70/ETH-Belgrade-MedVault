@@ -1,4 +1,4 @@
-name: rofl-application
+name: rofl
 version: 0.1.0
 tee: tdx
 kind: container
@@ -15,32 +15,3 @@ artifacts:
   container:
     runtime: https://github.com/oasisprotocol/oasis-sdk/releases/download/rofl-containers%2Fv0.5.0/rofl-containers#800be74e543f1d10d12ef6fadce89dd0a0ce7bc798dbab4f8d7aa012d82fbff1
     compose: compose.yaml
-deployments:
-  default:
-    app_id: rofl1qz605l6m3zf6des979qayuduwgd6qulh857e8y08
-    network: testnet
-    paratime: sapphire
-    admin: rofldeployer
-    trust_root:
-      height: 26874971
-      hash: e7af4618cad4c08b124ab354d83f35eb63d0f7439c44c150c89ecda7f571b841
-    policy:
-      quotes:
-        pcs:
-          tcb_validity_period: 30
-          min_tcb_evaluation_data_number: 18
-          tdx: {}
-      enclaves: []
-      endorsements:
-        - any: {}
-      fees: endorsing_node
-      max_expiration: 3
-    secrets:
-      - name: PORT
-        value: pGJwa1ggJAx883tdJ96gsiHm8CAeIO7XGbFufLHJjVUPiTSUDzBkbmFtZVRNQWnlIz5UcGdfiimdZ1fYLvm+fGVub25jZU+e30Ggb2BPRaNJD/M2pgFldmFsdWVUGX7x5IQPCiYv6vxcXBzPoC+Rmtk=
-      - name: RPC_URL
-        value: pGJwa1ggIPFZFbHbr0cDQfKayPyYwgAAduADMf4hXh+tntSZTTNkbmFtZVcQDflp/TPUUNU6aOUJ8q2DO3XbNugn82Vub25jZU/iISvASpc33a1p+bzfZitldmFsdWVYMej/ruhbc73ZkjzUgIilvtr7mgiuXqVmwzV/Z2/mahZhxG+IyrYaKMP0rLT5013GGqM=
-      - name: PRIVATE_KEY
-        value: pGJwa1ggufzN22mY8CVpLmODt6MRuiyyx2BBgmfst2UlVPVUVzxkbmFtZVgbPUYF1mzFomeV3WzAuQNHujFtrrRszvR41N4eZW5vbmNlT/FdITN6Kk4puJO42RucgGV2YWx1ZVhQ38jYf751ogWI2rAPdrG7kdbE/NHLVipQhcUksoX4/IgjgN/4B1AoJTlQeFrBJpufvaa53rNZJY83KNF0Umzbwg2W216ySbMV0AWpK8YCDvo=
-      - name: CONTRACT_ADDRESS
-        value: pGJwa1gghufzk+sfGou5xbIH+e3C/l3VgUd3koETaA5PytAGET1kbmFtZVgg7+PGV3ZoP8+YW87no3huGx9YkeH4wm4vczF7YiKKV9Nlbm9uY2VPz8oOoM7BJa+i7mhGb0wbZXZhbHVlWDqEAoUXif5iSkcBtvLoR2VL4LKP6eJ3YuiDjUtEV/uC0cyGb6MPgWdjt/UiRDVGNFx6YMV7fKyXAfGs
