@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { vaultAbi, vaultAddress } from "../config/vault-config";
+import { wrapEthereumProvider } from "@oasisprotocol/sapphire-paratime";
 
 export function isMetaMaskInstalled(): boolean {
 	return (
@@ -36,7 +37,8 @@ export async function getWalletAddress(): Promise<string | null> {
 export async function getVaultContract(): Promise<ethers.Contract> {
 	await (window as any).ethereum.request({ method: "eth_requestAccounts" });
 	const raw = (window as any).ethereum;
-	const provider = new ethers.BrowserProvider(raw);
+	const wrapped = wrapEthereumProvider(raw);
+	const provider = new ethers.BrowserProvider(wrapped);
 	const signer = await provider.getSigner();
 	return new ethers.Contract(vaultAddress, vaultAbi, signer);
 }
