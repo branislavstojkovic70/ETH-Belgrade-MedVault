@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  rofl-decryptor:
+    build: .
+    image: "rofl-decryptor"
+    platform: linux/amd64  
+    ports:
+      - "3000:3000"
+    environment:
+      - RPC_URL=${RPC_URL}
+      - PRIVATE_KEY=${PRIVATE_KEY}
+      - CONTRACT_ADDRESS=${CONTRACT_ADDRESS}
+    restart: unless-stopped
