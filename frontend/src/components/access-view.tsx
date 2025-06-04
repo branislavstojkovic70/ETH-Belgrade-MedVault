@@ -8,11 +8,10 @@ import {
 	CircularProgress,
 	Divider,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import type { FileInfo } from "../domain/file-info";
-import { fetchAndDecryptFile } from "../services/pinata-service";
-import { accessFile } from "../services/sapphire-service";
+
+import axios from "axios";
 
 const validationSchema = yup.object({
 	token: yup.string().required("Access token is required"),
@@ -20,37 +19,10 @@ const validationSchema = yup.object({
 
 export default function AccessView() {
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-	const [fileMeta, setFileMeta] = useState<FileInfo>();
+	const [fileName, setFileName] = useState<string | null>(null);
 	const [loadingMeta, setLoadingMeta] = useState<boolean>(false);
 	const [loadingFile, setLoadingFile] = useState<boolean>(false);
 
-	useEffect(() => {
-		if (!fileMeta) return;
-
-		setLoadingFile(true);
-		let objectUrl: string | null = null;
-
-		fetchAndDecryptFile(fileMeta.cid, fileMeta.key, fileMeta.iv)
-			.then((blob) => {
-				objectUrl = URL.createObjectURL(blob);
-				setPreviewUrl(objectUrl);
-			})
-			.catch((err) => {
-				console.error("Error fetching/decrypting file:", err);
-				toast.error(
-					"There was an error fetching or decrypting the file."
-				);
-			})
-			.finally(() => {
-				setLoadingFile(false);
-			});
-
-		return () => {
-			if (objectUrl) {
-				URL.revokeObjectURL(objectUrl);
-			}
-		};
-	}, [fileMeta]);
 
 	const formik = useFormik({
 		initialValues: {
@@ -59,18 +31,36 @@ export default function AccessView() {
 		validationSchema,
 		onSubmit: async (values) => {
 			setLoadingMeta(true);
-			try {
-				const file = await accessFile(values.token);
-				setFileMeta(file);
-				toast.success("File fetched.");
-			} catch (err) {
-				console.log("Transaction failed:", err);
-				toast.error("Transaction failed.");
-			} finally {
-				setLoadingMeta(false);
-			}
+			axios.post('http://localhost:3000/api/files/access', {
+				accessToken: values.token,
+				authToken: localStorage.getItem("token")
+			}, {
+				responseType: 'blob'
+			})
+				.then((response) => {
+					const blob = response.data;
+					const contentDisposition = response.headers['content-disposition'];
+					if (contentDisposition) {
+						const match = contentDisposition.match(/filename="(.+)"/);
+						if (match && match[1]) {
+							setFileName(match[1]);
+						}
+					}
+					const objectUrl = URL.createObjectURL(blob);
+					setPreviewUrl(objectUrl);
+					setLoadingMeta(false); 
+				})
+				.catch((err) => {
+					console.error("Error fetching/decrypting file:", err);
+					toast.error("There was an error fetching or decrypting the file.");
+					setLoadingMeta(false); 
+				})
+				.finally(() => {
+					setLoadingFile(false); 
+				});
 		},
 	});
+
 
 	const isBusy = loadingMeta || loadingFile;
 
@@ -118,7 +108,7 @@ export default function AccessView() {
 								fontSize: "18px"
 							}}
 						>
-							{fileMeta
+							{fileName
 								? "Loading preview…"
 								: "Insert access token"}
 						</Typography>
@@ -166,7 +156,7 @@ export default function AccessView() {
 					<TextField
 						fullWidth
 						label="File Name"
-						value={fileMeta?.name || ""}
+						value={fileName || ""}
 						InputProps={{ readOnly: true }}
 						disabled
 					/>
@@ -179,9 +169,9 @@ export default function AccessView() {
 						disabled={isBusy}
 					>
 						{loadingMeta && (
-        					<CircularProgress size={24} sx={{ color: "white" }} />
-            			)}
-            			{loadingMeta ? "Veriying token..." : "Verify Token"}
+							<CircularProgress size={24} sx={{ color: "white" }} />
+						)}
+						{loadingMeta ? "Veriying token..." : "Verify Token"}
 					</Button>
 				</Box>
 			</Box>

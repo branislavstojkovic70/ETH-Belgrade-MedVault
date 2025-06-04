@@ -1,0 +1,97 @@
+=== GLOBAL ===,
+.DS_Store
+*.log
+*.tmp
+*.swp
+*.bak
+.env
+.env.
+!env.example
+
+=== NODE (Frontend, Chainlink adapter) ===,
+node_modules/
+dist/
+build/
+.cache/
+.npm/
+.yarn/
+.yarn-cache/
+pnpm-lock.yaml
+
+=== REACT ===,
+*.tsbuildinfo
+*.map
+*.coverage
+coverage/
+.vite/
+out/
+*.local
+
+=== GO (Backend) ===,
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+bin/
+build/
+go.sum
+go.work.sum
+
+=== GO TOOLS ===,
+*.prof
+*.pprof
+*.pb.go
+*.gen.go
+
+=== IPFS / Data Files ===,
+*.ipfs
+*.pdf
+*.enc
+*.dec
+data/
+storage/
+
+=== iExec ===,
+/iexec_out/
+/iexec_project/
+*.zip
+/encrypted_files/
+detected-app/
+orders/
+*.RLC
+*.secrets.json
+/encryption/
+
+=== Solidity / Hardhat / Foundry ===,
+artifacts/
+cache/
+typechain/
+coverage/
+gas-report.json
+*.tsbuildinfo
+
+=== VSCode / Editor config ===,
+.vscode/
+.idea/
+*.code-workspace
+
+=== Docker ===,
+*.pid
+docker-compose.override.yml
+docker.env
+docker-data/
+
+=== Misc ===,
+*.sqlite
+*.db
+*.lock
+*.pem
+*.crt
+*.key
+*.cert
+*.token
+*.history
