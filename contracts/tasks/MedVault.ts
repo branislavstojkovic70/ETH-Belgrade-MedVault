@@ -8,7 +8,7 @@ task("deploy", "Deploys the MedVault contract")
 
     const factory = await hre.ethers.getContractFactory('MedVault');
     const [deployer] = await hre.ethers.getSigners();
-    const decoded = bech32.decode("rofl1qz605l6m3zf6des979qayuduwgd6qulh857e8y08");
+    const decoded = bech32.decode("rofl1qpterpydpsteetl3lz5g6x2s7hzzvrt20cfwtm0s");
     const bytes = bech32.fromWords(decoded.words);
     const uint8Bytes = new Uint8Array(bytes);  
     const roflBytes21 = hre.ethers.hexlify(uint8Bytes);
