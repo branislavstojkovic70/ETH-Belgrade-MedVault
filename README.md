@@ -1,5 +1,9 @@
 # MedVault
+<img src="./MedVault.jpeg" alt="MedVault" style="width:100%; height:auto;" />
 
+---
+
+## Overview
 **MedVault** is a privacy-preserving medical data vault built for ETH Belgrade 2025. It empowers patients to securely upload, store, and selectively share their encrypted medical records with doctors for a limited time — all without relying on a centralized backend.
 
 ---
